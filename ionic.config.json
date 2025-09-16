@@ -1,0 +1,7 @@
+{
+  "name": "Mywallpaper",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular-standalone"
+}
