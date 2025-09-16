@@ -1,0 +1,37 @@
+<ion-content [fullscreen]="true" class="ion-padding">
+
+  <div class="login-container">
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>Iniciar sesión</ion-card-title>
+      </ion-card-header>
+
+      <ion-card-content>
+        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+          <!-- Email -->
+          <ion-item>
+            <ion-label position="floating">Correo</ion-label>
+            <ion-input type="email" formControlName="email"></ion-input>
+          </ion-item>
+          <ion-note color="danger" *ngIf="loginForm.get('email')?.touched && loginForm.get('email')?.invalid">
+            Ingresa un correo válido
+          </ion-note>
+
+          <!-- Password -->
+          <ion-item>
+            <ion-label position="floating">Contraseña</ion-label>
+            <ion-input type="password" formControlName="password"></ion-input>
+          </ion-item>
+          <ion-note color="danger" *ngIf="loginForm.get('password')?.touched && loginForm.get('password')?.invalid">
+            La contraseña debe tener al menos 6 caracteres
+          </ion-note>
+
+          <!-- Botón -->
+          <ion-button expand="block" type="submit" [disabled]="loginForm.invalid" class="ion-margin-top">
+            Iniciar sesión
+          </ion-button>
+        </form>
+      </ion-card-content>
+    </ion-card>
+  </div>
+</ion-content>
