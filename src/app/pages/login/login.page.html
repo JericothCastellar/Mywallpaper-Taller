@@ -25,6 +25,16 @@
           <ion-note color="danger" *ngIf="loginForm.get('password')?.touched && loginForm.get('password')?.invalid">
             La contraseña debe tener al menos 6 caracteres
           </ion-note>
+          <ion-item>  
+            <ion-label> 
+              Select your language
+            </ion-label>
+            <ion-select name="language">
+              <ion-select-option value="Español">Español</ion-select-option>
+              <ion-select-option value="English">English</ion-select-option>
+  
+            </ion-select>
+          </ion-item>
 
           <!-- Botón -->
           <ion-button expand="block" type="submit" [disabled]="loginForm.invalid" class="ion-margin-top">

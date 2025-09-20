@@ -1,13 +1,47 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>home</ion-title>
-  </ion-toolbar>
-</ion-header>
+<ion-content [fullscreen]="true" class="ion-padding">
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">home</ion-title>
-    </ion-toolbar>
-  </ion-header>
+  <!-- Title -->
+  <div class="home-title">
+    Mywallpapers
+  </div>
+
+  <!-- Grid wallpapers -->
+  <ion-grid>
+    <ion-row>
+      <ion-col size="6" *ngFor="let wallpaper of wallpapers; let i = index">
+        <ion-card class="wallpaper-card">
+          <img [src]="wallpaper" alt="wallpaper" />
+          <ion-button fill="clear" color="danger" class="delete-btn" (click)="deleteWallpaper(i); $event.stopPropagation()">
+            <ion-icon [icon]="deleteIcon"></ion-icon>
+          </ion-button>
+          <ion-button fill="clear" color="light" class="view-btn" (click)="viewWallpaper(wallpaper)">
+            <ion-icon [icon]="viewIcon"></ion-icon>
+          </ion-button>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+  <!-- FAB -->
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button>
+      <ion-icon [icon]="menuIcon"></ion-icon>
+    </ion-fab-button>
+
+    <ion-fab-list side="top">
+      <ion-fab-button (click)="fileInput.click()">
+        <ion-icon [icon]="addIcon"></ion-icon>
+      </ion-fab-button>
+
+      <ion-fab-button routerLink="/updateprofile">
+        <ion-icon [icon]="profileIcon"></ion-icon>
+      </ion-fab-button>
+
+      <ion-fab-button (click)="logout()">
+        <ion-icon [icon]="logoutIcon"></ion-icon>
+      </ion-fab-button>
+    </ion-fab-list>
+  </ion-fab>
+
+  <input type="file" accept="image/*" #fileInput hidden (change)="onFileSelected($event)" />
 </ion-content>
