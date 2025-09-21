@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import {
@@ -6,17 +6,19 @@ import {
   IonButton,
   IonIcon,
   IonCard,
-  IonCardContent,
   IonGrid,
   IonRow,
   IonCol,
   IonFab,
   IonFabButton,
-  IonFabList
+  IonFabList,
+  ToastController
 } from '@ionic/angular/standalone';
 
-// ICo
 import { addOutline, personCircleOutline, logOutOutline, menuOutline, trashOutline, eyeOutline } from 'ionicons/icons';
+
+import { AuthService } from '../../core/services/auth.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-home',
@@ -30,7 +32,6 @@ import { addOutline, personCircleOutline, logOutOutline, menuOutline, trashOutli
     IonButton,
     IonIcon,
     IonCard,
-    IonCardContent,
     IonGrid,
     IonRow,
     IonCol,
@@ -39,10 +40,10 @@ import { addOutline, personCircleOutline, logOutOutline, menuOutline, trashOutli
     IonFabList
   ],
 })
-export class HomePage {
+export class HomePage implements OnInit {
   wallpapers: string[] = [];
 
-  // Ico FAB
+  // Icons
   menuIcon = menuOutline;
   addIcon = addOutline;
   profileIcon = personCircleOutline;
@@ -50,26 +51,59 @@ export class HomePage {
   deleteIcon = trashOutline;
   viewIcon = eyeOutline;
 
+  constructor(
+    private authService: AuthService,
+    private router: Router,
+    private toastCtrl: ToastController
+  ) {}
+
+  ngOnInit() {
+    console.log('HomePage initialized');
+
+  }
+  goToProfile() {
+  this.router.navigate(['/updateprofile']);
+}
+
+
   onFileSelected(event: any) {
     const file = event.target.files[0];
     if (file) {
       const reader = new FileReader();
       reader.onload = () => {
+        // Local preview
         this.wallpapers.push(reader.result as string);
+     
       };
       reader.readAsDataURL(file);
     }
   }
 
   viewWallpaper(wallpaper: string) {
-    console.log('Ver wallpaper:', wallpaper);
+    console.log('View wallpaper:', wallpaper);
+
   }
 
   deleteWallpaper(index: number) {
     this.wallpapers.splice(index, 1);
+
   }
 
-  logout() {
-    console.log('Cerrar sesión');
+  async logout() {
+    const res = await this.authService.logout();
+    if (res.success) {
+      this.router.navigate(['/login']);
+    } else {
+      this.showToast('Error al cerrar sesión');
+    }
+  }
+
+  private async showToast(message: string) {
+    const toast = await this.toastCtrl.create({
+      message,
+      duration: 2000,
+      position: 'bottom'
+    });
+    toast.present();
   }
 }

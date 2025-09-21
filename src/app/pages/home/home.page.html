@@ -11,7 +11,8 @@
       <ion-col size="6" *ngFor="let wallpaper of wallpapers; let i = index">
         <ion-card class="wallpaper-card">
           <img [src]="wallpaper" alt="wallpaper" />
-          <ion-button fill="clear" color="danger" class="delete-btn" (click)="deleteWallpaper(i); $event.stopPropagation()">
+          <ion-button fill="clear" color="danger" class="delete-btn"
+            (click)="deleteWallpaper(i); $event.stopPropagation()">
             <ion-icon [icon]="deleteIcon"></ion-icon>
           </ion-button>
           <ion-button fill="clear" color="light" class="view-btn" (click)="viewWallpaper(wallpaper)">
@@ -22,7 +23,7 @@
     </ion-row>
   </ion-grid>
 
-  <!-- FAB -->
+  <!-- FAB Menu -->
   <ion-fab vertical="bottom" horizontal="end" slot="fixed">
     <ion-fab-button>
       <ion-icon [icon]="menuIcon"></ion-icon>
@@ -33,7 +34,7 @@
         <ion-icon [icon]="addIcon"></ion-icon>
       </ion-fab-button>
 
-      <ion-fab-button routerLink="/updateprofile">
+      <ion-fab-button (click)="goToProfile()">
         <ion-icon [icon]="profileIcon"></ion-icon>
       </ion-fab-button>
 

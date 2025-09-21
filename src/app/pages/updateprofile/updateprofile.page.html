@@ -1,12 +1,14 @@
 <ion-content [fullscreen]="true" class="ion-padding">
 
   <!-- Botonn volver al home -->
-  <div class="back-btn-container">
-    <ion-button class="back-btn" routerLink="/home">
-      <ion-icon slot="start" name="arrow-back-outline"></ion-icon>
-      Home
-    </ion-button>
-  </div>
+
+<div class="back-btn-container">
+  <ion-button class="back-btn" routerLink="/home">
+    <ion-icon slot="start" name="arrow-back-outline"></ion-icon>
+    Home
+  </ion-button>
+</div>
+
 
   <div class="profile-container">
     <ion-card>
@@ -18,14 +20,14 @@
         <form [formGroup]="profileForm" (ngSubmit)="onSubmit()">
           <ion-grid>
             <ion-row>
-              <!-- User -->
+              <!-- Name -->
               <ion-col size="6">
                 <ion-item>
                   <ion-label position="floating">Nombre</ion-label>
                   <ion-input type="text" formControlName="name"></ion-input>
                 </ion-item>
               </ion-col>
-
+ 
               <!-- Lastname -->
               <ion-col size="6">
                 <ion-item>

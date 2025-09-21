@@ -1,11 +1,16 @@
+
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 
 import {
-  IonContent, IonHeader, IonTitle, IonToolbar, IonItem, IonLabel, IonInput, IonButton,
-  IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonNote, IonGrid, IonRow, IonCol, IonIcon
+  IonContent, IonItem, IonLabel, IonInput, IonButton,
+  IonCard, IonCardContent, IonCardHeader, IonCardTitle,
+  IonNote, IonGrid, IonRow, IonCol, IonIcon
 } from '@ionic/angular/standalone';
+
+import { AuthService } from '../../core/services/auth.service';
 
 @Component({
   selector: 'app-updateprofile',
@@ -13,13 +18,14 @@ import {
   styleUrls: ['./updateprofile.page.scss'],
   standalone: true,
   imports: [
-    IonContent, IonHeader, IonTitle, IonToolbar, CommonModule, FormsModule, ReactiveFormsModule,
-    IonItem, IonLabel, IonInput, IonButton, IonCard, IonCardContent, IonCardHeader, IonCardTitle,
+    IonContent, CommonModule, FormsModule, ReactiveFormsModule,
+    IonItem, IonLabel, IonInput, IonButton,
+    IonCard, IonCardContent, IonCardHeader, IonCardTitle,
     IonNote, IonGrid, IonRow, IonCol, IonIcon
   ],
 })
-export class UpdateprofilePage implements OnInit {
-  constructor(private fb: FormBuilder) {}
+export class UpdateProfilePage implements OnInit {
+  constructor(private fb: FormBuilder, private authService: AuthService, private router: Router) {}
 
   profileForm = this.fb.group({
     name: ['', [Validators.minLength(2)]],
@@ -29,10 +35,18 @@ export class UpdateprofilePage implements OnInit {
   });
 
   ngOnInit() {
-    console.log('UpdateprofilePage inicializada');
+    console.log('UpdateProfilePage initialized');
+    const currentUser = this.authService.getCurrentUser();
+    if (currentUser) {
+      this.profileForm.patchValue({
+        name: currentUser.displayName?.split(' ')[0] || '',
+        lastname: currentUser.displayName?.split(' ')[1] || '',
+        email: currentUser.email || ''
+      });
+    }
   }
 
-  onSubmit() {
+  async onSubmit() {
     if (this.profileForm.valid) {
       const formValues = this.profileForm.value as {
         name?: string | null;
@@ -41,21 +55,28 @@ export class UpdateprofilePage implements OnInit {
         password?: string | null;
       };
 
-      const updatedData: Partial<typeof formValues> = {};
 
-      (Object.keys(formValues) as (keyof typeof formValues)[]).forEach((key) => {
-        if (formValues[key]) {
-          updatedData[key] = formValues[key];
+      const updatedData: { name?: string; lastname?: string; email?: string; password?: string } = {};
+      (Object.keys(formValues) as (keyof typeof formValues)[]).forEach(key => {
+        const value = formValues[key];
+        if (value) {
+          updatedData[key] = value;
         }
       });
 
       if (Object.keys(updatedData).length > 0) {
-        console.log('Campos actualizados:', updatedData);
+        const res = await this.authService.updateProfile(updatedData);
+        if (res.success) {
+          console.log('Profile updated successfully');
+          this.router.navigate(['/home']);
+        } else {
+          console.error('Error updating profile:', res.message);
+        }
       } else {
-        console.log('No se actualizaron campos');
+        console.log('No fields to update');
       }
     } else {
-      console.log('Formulario no valido');
+      console.log('Form is invalid');
       this.profileForm.markAllAsTouched();
     }
   }

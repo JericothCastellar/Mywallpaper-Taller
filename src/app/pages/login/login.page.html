@@ -1,13 +1,13 @@
 <ion-content [fullscreen]="true" class="ion-padding">
-
   <div class="login-container">
     <ion-card>
       <ion-card-header>
-        <ion-card-title>Iniciar sesión</ion-card-title>
+        <ion-card-title>Iniciar Sesión</ion-card-title>
       </ion-card-header>
 
       <ion-card-content>
         <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+
           <!-- Email -->
           <ion-item>
             <ion-label position="floating">Correo</ion-label>
@@ -22,25 +22,22 @@
             <ion-label position="floating">Contraseña</ion-label>
             <ion-input type="password" formControlName="password"></ion-input>
           </ion-item>
-          <ion-note color="danger" *ngIf="loginForm.get('password')?.touched && loginForm.get('password')?.invalid">
+          <ion-note color="danger"
+            *ngIf="loginForm.get('password')?.touched && loginForm.get('password')?.errors?.['minlength']">
             La contraseña debe tener al menos 6 caracteres
           </ion-note>
-          <ion-item>  
-            <ion-label> 
-              Select your language
-            </ion-label>
-            <ion-select name="language">
-              <ion-select-option value="Español">Español</ion-select-option>
-              <ion-select-option value="English">English</ion-select-option>
-  
-            </ion-select>
-          </ion-item>
 
-          <!-- Botón -->
+          <!-- Button login -->
           <ion-button expand="block" type="submit" [disabled]="loginForm.invalid" class="ion-margin-top">
-            Iniciar sesión
+            Ingresar
           </ion-button>
         </form>
+
+        <div class="ion-text-center ion-margin-top">
+          <p>¿No tienes cuenta?</p>
+          <ion-button fill="clear" (click)="goToRegister()">Crear cuenta</ion-button>
+
+        </div>
       </ion-card-content>
     </ion-card>
   </div>
