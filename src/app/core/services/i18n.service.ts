@@ -47,7 +47,13 @@ export class I18nService {
         LOGGED_OUT: 'Sesión cerrada correctamente',
         UPLOADING: 'Subiendo...',
         DELETING: 'Eliminando...',
-        CLOSE: 'Cerrar'
+        CLOSE: 'Cerrar',
+        SET_AS_WALLPAPER: 'Poner como fondo de pantalla',
+        CHOOSE_WALLPAPER: 'Elige un wallpaper',
+        CANCEL: 'Cancelar',
+        NO_WALLPAPERS: 'No hay wallpapers disponibles',
+        NO_IMAGE_SELECTED: 'No hay imagen seleccionada',
+        SET_WALLPAPER_PENDING: 'Configurando wallpaper...'
       },
       PROFILE: {
         TITLE: 'Actualizar Perfil',
@@ -100,7 +106,13 @@ export class I18nService {
         LOGGED_OUT: 'Logged out successfully',
         UPLOADING: 'Uploading...',
         DELETING: 'Deleting...',
-        CLOSE: 'Close'
+        CLOSE: 'Close',
+        SET_AS_WALLPAPER: 'Set as wallpaper',
+        CHOOSE_WALLPAPER: 'Choose a wallpaper',
+        CANCEL: 'Cancel',
+        NO_WALLPAPERS: 'No wallpapers available',
+        NO_IMAGE_SELECTED: 'No image selected',
+        SET_WALLPAPER_PENDING: 'Setting wallpaper...'
       },
       PROFILE: {
         TITLE: 'Update Profile',

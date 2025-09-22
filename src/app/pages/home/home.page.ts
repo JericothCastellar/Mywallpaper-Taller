@@ -32,14 +32,12 @@ export class HomePage implements OnInit {
   userId: string | null = null;
   userEmail: string | null = null;
   selectedType: 'home' | 'lock' = 'home';
-
   menuIcon = menuOutline;
   addIcon = addOutline;
   profileIcon = personCircleOutline;
   logoutIcon = logOutOutline;
   deleteIcon = trashOutline;
   viewIcon = eyeOutline;
-
   @ViewChild(IonModal) modal!: IonModal;
   selectedWallpaperUrl: string | null = null;
   uploading = false;
@@ -54,22 +52,20 @@ export class HomePage implements OnInit {
     private filePicker: FilePickerService
   ) {}
 
-async ngOnInit() {
-  const authUser = this.authService.getCurrentUser();
-  if (!authUser) {
-    this.router.navigate(['/login']);
-    return;
+  async ngOnInit() {
+    const authUser = this.authService.getCurrentUser();
+    if (!authUser) {
+      this.router.navigate(['/login']);
+      return;
+    }
+    this.userId = authUser.uid;
+    this.userEmail = authUser.email;
+    if (this.userId) {
+      const homeWallpapers = await this.supabaseService.listFiles(this.userId, 'home');
+      const lockWallpapers = await this.supabaseService.listFiles(this.userId, 'lock');
+      this.wallpapers = [...homeWallpapers, ...lockWallpapers];
+    }
   }
-  this.userId = authUser.uid;
-  this.userEmail = authUser.email;
-
-  if (this.userId) {
-    const homeWallpapers = await this.supabaseService.listFiles(this.userId, 'home');
-    const lockWallpapers = await this.supabaseService.listFiles(this.userId, 'lock');
-    this.wallpapers = [...homeWallpapers, ...lockWallpapers];
-    console.log('Wallpapers cargados:', this.wallpapers);
-  }
-}
 
   goToProfile() {
     this.router.navigate(['/updateprofile']);
@@ -80,29 +76,21 @@ async ngOnInit() {
     try {
       blob = await this.filePicker.pickImage();
     } catch {
-      // si el usuario cancela, no hacemos nada
       return;
     }
-
-    if (!blob) return; // no mostrar error al cancelar
-
+    if (!blob) return;
     const file = new File([blob], 'wallpaper.jpg', { type: blob.type });
-
     if (file.size > 5 * 1024 * 1024)
       return this.toast.show(this.i18n.translate('HOME.FILE_TOO_BIG'));
-
     if (this.uploading)
       return this.toast.show(this.i18n.translate('HOME.UPLOAD_IN_PROGRESS'));
-
     if (!this.userId)
       return this.toast.show(this.i18n.translate('HOME.NOT_AUTH'));
-
     this.uploading = true;
     await this.loading.show(this.i18n.translate('HOME.UPLOADING'));
     const res = await this.supabaseService.uploadFile(file, this.userId, this.selectedType);
     await this.loading.hide();
     this.uploading = false;
-
     if (res.success && res.url) {
       this.wallpapers.unshift({ name: res.path!, url: res.url });
       this.toast.show(this.i18n.translate('HOME.UPLOADED'));
@@ -111,33 +99,19 @@ async ngOnInit() {
     }
   }
 
-  viewWallpaper(wallpaper: { name: string; url: string }) {
-    this.selectedWallpaperUrl = wallpaper.url;
-    this.modal.present();
-  }
-
-  closeModal() {
-    this.modal.dismiss();
-    this.selectedWallpaperUrl = null;
-  }
-
   async deleteWallpaper(index: number) {
-  if (!this.userId) return this.toast.show(this.i18n.translate('HOME.NOT_AUTH'));
-  const wallpaper = this.wallpapers[index];
-  console.log('Intentando borrar:', wallpaper.name);
-
-  await this.loading.show(this.i18n.translate('HOME.DELETING'));
-  const res = await this.supabaseService.deleteFile(wallpaper.name);
-  await this.loading.hide();
-
-  if (res.success) {
-    this.wallpapers.splice(index, 1);
-    this.toast.show(this.i18n.translate('HOME.DELETED'));
-  } else {
-    this.toast.show(this.i18n.translate('HOME.ERROR_DELETING') + ': ' + res.message, 2500, 'danger');
+    if (!this.userId) return this.toast.show(this.i18n.translate('HOME.NOT_AUTH'));
+    const wallpaper = this.wallpapers[index];
+    await this.loading.show(this.i18n.translate('HOME.DELETING'));
+    const res = await this.supabaseService.deleteFile(wallpaper.name);
+    await this.loading.hide();
+    if (res.success) {
+      this.wallpapers.splice(index, 1);
+      this.toast.show(this.i18n.translate('HOME.DELETED'));
+    } else {
+      this.toast.show(this.i18n.translate('HOME.ERROR_DELETING') + ': ' + res.message, 2500, 'danger');
+    }
   }
-}
-
 
   async logout() {
     const res = await this.authService.logout();
@@ -147,5 +121,40 @@ async ngOnInit() {
     } else {
       this.toast.show(this.i18n.translate('HOME.ERROR_LOGOUT'), 2500, 'danger');
     }
+  }
+
+  // nuevo: abrir ActionSheet para elegir wallpaper
+  async openSelectWallpaper() {
+    if (this.wallpapers.length === 0) {
+      return this.toast.show(this.i18n.translate('HOME.NO_WALLPAPERS'));
+    }
+
+    // construimos botones para ActionSheet
+    const buttons = this.wallpapers.map(w => ({
+      text: w.name,
+      handler: () => this.setAsWallpaper(w.url)
+    }));
+
+    // usamos Ionic Action Sheet
+    const actionSheet = document.createElement('ion-action-sheet');
+    actionSheet.header = this.i18n.translate('HOME.CHOOSE_WALLPAPER');
+    actionSheet.buttons = [
+      ...buttons,
+      {
+        text: this.i18n.translate('HOME.CANCEL'),
+        role: 'cancel'
+      }
+    ];
+    document.body.appendChild(actionSheet);
+    await actionSheet.present();
+  }
+
+  async setAsWallpaper(url: string) {
+    if (!url)
+      return this.toast.show(this.i18n.translate('HOME.NO_IMAGE_SELECTED'));
+
+    this.selectedWallpaperUrl = url;
+
+    this.toast.show(this.i18n.translate('HOME.SET_WALLPAPER_PENDING'));
   }
 }

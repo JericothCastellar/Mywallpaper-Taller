@@ -7,13 +7,11 @@
     <ion-row>
       <ion-col size="6" *ngFor="let wallpaper of wallpapers; let i = index">
         <ion-card class="wallpaper-card">
-          <img [src]="wallpaper.url" alt="wallpaper" />
+          <img [src]="wallpaper.url" alt="wallpaper" class="wallpaper-img" />
+
           <ion-button fill="clear" color="danger" class="delete-btn"
-                      (click)="deleteWallpaper(i); $event.stopPropagation()">
+            (click)="deleteWallpaper(i); $event.stopPropagation()">
             <ion-icon [icon]="deleteIcon"></ion-icon>
-          </ion-button>
-          <ion-button fill="clear" color="light" class="view-btn" (click)="viewWallpaper(wallpaper)">
-            <ion-icon [icon]="viewIcon"></ion-icon>
           </ion-button>
         </ion-card>
       </ion-col>
@@ -25,30 +23,21 @@
     <ion-fab-button>
       <ion-icon [icon]="menuIcon"></ion-icon>
     </ion-fab-button>
-
     <ion-fab-list side="top">
-      <!-- Usamos pickWallpaper() directamente -->
       <ion-fab-button (click)="pickWallpaper()">
         <ion-icon [icon]="addIcon"></ion-icon>
+      </ion-fab-button>
+
+      <ion-fab-button (click)="openSelectWallpaper()">
+        <ion-icon [icon]="viewIcon"></ion-icon>
       </ion-fab-button>
 
       <ion-fab-button (click)="goToProfile()">
         <ion-icon [icon]="profileIcon"></ion-icon>
       </ion-fab-button>
-
       <ion-fab-button (click)="logout()">
         <ion-icon [icon]="logoutIcon"></ion-icon>
       </ion-fab-button>
     </ion-fab-list>
   </ion-fab>
-
-  <!-- Modal para ver wallpaper -->
-  <ion-modal #modal>
-    <ion-content>
-      <ion-button fill="clear" color="danger" (click)="closeModal()">
-        {{ i18n.translate('HOME.CLOSE') }}
-      </ion-button>
-      <img [src]="selectedWallpaperUrl" class="full-wallpaper" *ngIf="selectedWallpaperUrl"/>
-    </ion-content>
-  </ion-modal>
 </ion-content>
