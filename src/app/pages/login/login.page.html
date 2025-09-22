@@ -2,7 +2,7 @@
   <div class="login-container">
     <ion-card>
       <ion-card-header>
-        <ion-card-title>Iniciar Sesión</ion-card-title>
+        <ion-card-title>{{ i18n.translate('LOGIN.TITLE') }}</ion-card-title>
       </ion-card-header>
 
       <ion-card-content>
@@ -10,33 +10,32 @@
 
           <!-- Email -->
           <ion-item>
-            <ion-label position="floating">Correo</ion-label>
+            <ion-label position="floating">{{ i18n.translate('LOGIN.EMAIL') }}</ion-label>
             <ion-input type="email" formControlName="email"></ion-input>
           </ion-item>
           <ion-note color="danger" *ngIf="loginForm.get('email')?.touched && loginForm.get('email')?.invalid">
-            Ingresa un correo válido
+            {{ i18n.translate('LOGIN.INVALID_EMAIL') }}
           </ion-note>
 
           <!-- Password -->
           <ion-item>
-            <ion-label position="floating">Contraseña</ion-label>
+            <ion-label position="floating">{{ i18n.translate('LOGIN.PASSWORD') }}</ion-label>
             <ion-input type="password" formControlName="password"></ion-input>
           </ion-item>
           <ion-note color="danger"
             *ngIf="loginForm.get('password')?.touched && loginForm.get('password')?.errors?.['minlength']">
-            La contraseña debe tener al menos 6 caracteres
+            {{ i18n.translate('LOGIN.MIN_PASSWORD') }}
           </ion-note>
 
           <!-- Button login -->
           <ion-button expand="block" type="submit" [disabled]="loginForm.invalid" class="ion-margin-top">
-            Ingresar
+            {{ i18n.translate('LOGIN.BUTTON') }}
           </ion-button>
         </form>
 
         <div class="ion-text-center ion-margin-top">
-          <p>¿No tienes cuenta?</p>
-          <ion-button fill="clear" (click)="goToRegister()">Crear cuenta</ion-button>
-
+          <p>{{ i18n.translate('LOGIN.NO_ACCOUNT') }}</p>
+          <ion-button fill="clear" (click)="goToRegister()">{{ i18n.translate('LOGIN.CREATE_ACCOUNT') }}</ion-button>
         </div>
       </ion-card-content>
     </ion-card>

@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import {
   IonContent, IonHeader, IonTitle, IonToolbar, IonItem, IonLabel, IonInput,
-  IonButton, IonNote, IonCard, IonCardContent, IonCardHeader, IonCardTitle,
-  ToastController
+  IonButton, IonNote, IonCard, IonCardContent, IonCardHeader, IonCardTitle
 } from '@ionic/angular/standalone';
 import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
+import { I18nService } from '../../core/services/i18n.service';
+import { ToastService } from '../../core/services/toast.service';
 
 @Component({
   selector: 'app-login',
@@ -30,8 +31,9 @@ export class LoginPage {
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
-    private toastCtrl: ToastController,
-    private router: Router
+    private router: Router,
+    public i18n: I18nService,
+    private toast: ToastService
   ) {}
 
   async onSubmit() {
@@ -43,13 +45,15 @@ export class LoginPage {
     const { email, password } = this.loginForm.value;
     if (!email || !password) return;
 
+    await this.toast.showLoader(this.i18n.translate('LOGIN.BUTTON'));
     const res = await this.authService.login(email, password);
+    await this.toast.hideLoader();
 
     if (res.success) {
-      this.showToast('Inicio de sesión exitoso');
+      this.toast.show(this.i18n.translate('LOGIN.SUCCESS'));
       this.router.navigate(['/home']);
     } else {
-      this.showToast(this.firebaseErrorToMessage(res.message || 'Error al iniciar sesión'));
+      this.toast.show(this.firebaseErrorToMessage(res.message || this.i18n.translate('LOGIN.ERROR')), 2500, 'danger');
     }
   }
 
@@ -62,12 +66,7 @@ export class LoginPage {
       case 'Firebase: Error (auth/user-not-found).': return 'Usuario no encontrado.';
       case 'Firebase: Error (auth/wrong-password).': return 'Contraseña incorrecta.';
       case 'Firebase: Error (auth/invalid-email).': return 'Correo inválido.';
-      default: return 'Ocurrió un error al iniciar sesión.';
+      default: return this.i18n.translate('LOGIN.ERROR');
     }
-  }
-
-  private async showToast(message: string) {
-    const toast = await this.toastCtrl.create({ message, duration: 2500, position: 'bottom' });
-    toast.present();
   }
 }

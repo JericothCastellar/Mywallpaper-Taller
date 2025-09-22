@@ -1,13 +1,15 @@
+
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import {
   IonContent, IonHeader, IonTitle, IonToolbar, IonItem, IonLabel, IonInput, IonButton,
-  IonNote, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonSelect, IonSelectOption,
-  ToastController
+  IonNote, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonSelect, IonSelectOption
 } from '@ionic/angular/standalone';
 import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
+import { I18nService } from '../../core/services/i18n.service';
+import { ToastService } from '../../core/services/toast.service';
 
 @Component({
   selector: 'app-register',
@@ -27,14 +29,15 @@ export class RegisterPage implements OnInit {
     apellido: ['', [Validators.required, Validators.minLength(2)]],
     email: ['', [Validators.required, Validators.email]],
     password: ['', [Validators.required, Validators.minLength(6)]],
-    language: ['Español', Validators.required]
+    language: ['es', Validators.required]
   });
 
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
-    private toastCtrl: ToastController,
-    private router: Router
+    private router: Router,
+    public i18n: I18nService,
+    private toast: ToastService
   ) {}
 
   ngOnInit() {}
@@ -46,17 +49,15 @@ export class RegisterPage implements OnInit {
     }
 
     const { nombre, apellido, email, password, language } = this.registerForm.value;
-
-    // 🔑 Registrar en Firebase + sincronizar con Supabase
-    const res = await this.authService.register(
-      nombre!, apellido!, email!, password!, language!
-    );
+    await this.toast.showLoader('Registrando...');
+    const res = await this.authService.register(nombre!, apellido!, email!, password!, language!);
+    await this.toast.hideLoader();
 
     if (res.success) {
-      this.showToast('Registro exitoso');
+      this.toast.show('Registro exitoso');
       this.router.navigate(['/login']);
     } else {
-      this.showToast(this.firebaseErrorToMessage(res.message || 'Error al registrar'));
+      this.toast.show(this.firebaseErrorToMessage(res.message || 'Error al registrar'), 2500, 'danger');
     }
   }
 
@@ -71,15 +72,6 @@ export class RegisterPage implements OnInit {
       default:
         return 'Ocurrió un error, intenta de nuevo.';
     }
-  }
-
-  private async showToast(message: string) {
-    const toast = await this.toastCtrl.create({
-      message,
-      duration: 2500,
-      position: 'bottom'
-    });
-    toast.present();
   }
 
   goToLogin() {

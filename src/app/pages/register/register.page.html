@@ -2,67 +2,65 @@
   <div class="register-container">
     <ion-card>
       <ion-card-header>
-        <ion-card-title>Registro</ion-card-title>
+        <ion-card-title>{{ i18n.translate('REGISTER.TITLE') }}</ion-card-title>
       </ion-card-header>
 
       <ion-card-content>
         <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
-          <!-- Name -->
+
           <ion-item>
-            <ion-label position="floating">Nombre</ion-label>
+            <ion-label position="floating">{{ i18n.translate('REGISTER.NAME') }}</ion-label>
             <ion-input type="text" formControlName="nombre"></ion-input>
           </ion-item>
-          <ion-note color="danger" *ngIf="registerForm.get('nombre')?.touched && registerForm.get('nombre')?.hasError('minlength')">
-            El nombre debe tener al menos 2 caracteres
+          <ion-note color="danger"
+                    *ngIf="registerForm.get('nombre')?.touched && registerForm.get('nombre')?.hasError('minlength')">
+            {{ i18n.translate('REGISTER.NAME_MIN') || 'El nombre debe tener al menos 2 caracteres' }}
           </ion-note>
 
-          <!-- Lastname -->
           <ion-item>
-            <ion-label position="floating">Apellido</ion-label>
+            <ion-label position="floating">{{ i18n.translate('REGISTER.LASTNAME') }}</ion-label>
             <ion-input type="text" formControlName="apellido"></ion-input>
           </ion-item>
-          <ion-note color="danger" *ngIf="registerForm.get('apellido')?.touched && registerForm.get('apellido')?.hasError('minlength')">
-            El apellido debe tener al menos 2 caracteres
+          <ion-note color="danger"
+                    *ngIf="registerForm.get('apellido')?.touched && registerForm.get('apellido')?.hasError('minlength')">
+            {{ i18n.translate('REGISTER.LASTNAME_MIN') || 'El apellido debe tener al menos 2 caracteres' }}
           </ion-note>
 
-          <!-- Email -->
           <ion-item>
-            <ion-label position="floating">Correo</ion-label>
+            <ion-label position="floating">{{ i18n.translate('LOGIN.EMAIL') }}</ion-label>
             <ion-input type="email" formControlName="email"></ion-input>
           </ion-item>
-          <ion-note color="danger" *ngIf="registerForm.get('email')?.touched && registerForm.get('email')?.invalid">
-            Ingresa un correo válido
+          <ion-note color="danger"
+                    *ngIf="registerForm.get('email')?.touched && registerForm.get('email')?.invalid">
+            {{ i18n.translate('LOGIN.INVALID_EMAIL') }}
           </ion-note>
 
-          <!-- Contraseña -->
           <ion-item>
-            <ion-label position="floating">Contraseña</ion-label>
+            <ion-label position="floating">{{ i18n.translate('LOGIN.PASSWORD') }}</ion-label>
             <ion-input type="password" formControlName="password"></ion-input>
           </ion-item>
-          <ion-note color="danger" *ngIf="registerForm.get('password')?.touched && registerForm.get('password')?.hasError('minlength')">
-            La contraseña debe tener al menos 6 caracteres
+          <ion-note color="danger"
+                    *ngIf="registerForm.get('password')?.touched && registerForm.get('password')?.hasError('minlength')">
+            {{ i18n.translate('LOGIN.MIN_PASSWORD') }}
           </ion-note>
 
-          <!-- idioma -->
           <ion-item>
-            <ion-label>Selecciona tu idioma</ion-label>
+            <ion-label>{{ i18n.translate('LOGIN.LANGUAGE') }}</ion-label>
             <ion-select formControlName="language">
-              <ion-select-option value="Español">Español</ion-select-option>
-              <ion-select-option value="English">English</ion-select-option>
+              <ion-select-option value="es">Español</ion-select-option>
+              <ion-select-option value="en">English</ion-select-option>
             </ion-select>
           </ion-item>
 
-          <!-- Registra -->
           <ion-button expand="block" type="submit" [disabled]="registerForm.invalid" class="ion-margin-top">
-            Registrarse
+            {{ i18n.translate('REGISTER.BUTTON') || 'Registrarse' }}
           </ion-button>
         </form>
 
-        <!-- Redirige a Login -->
         <div class="ion-text-center ion-margin-top">
-          <p>¿Ya tienes cuenta?</p>
+          <p>{{ i18n.translate('REGISTER.HAVE_ACCOUNT') || '¿Ya tienes cuenta?' }}</p>
           <ion-button fill="clear" (click)="goToLogin()" class="ion-margin-top">
-            Inicia sesión
+            {{ i18n.translate('LOGIN.TITLE') }}
           </ion-button>
         </div>
       </ion-card-content>

@@ -1,72 +1,65 @@
 <ion-content [fullscreen]="true" class="ion-padding">
-
-  <!-- Botonn volver al home -->
-
-<div class="back-btn-container">
-  <ion-button class="back-btn" routerLink="/home">
-    <ion-icon slot="start" name="arrow-back-outline"></ion-icon>
-    Home
-  </ion-button>
-</div>
-
+  <div class="back-btn-container">
+<ion-button class="back-btn" [routerLink]="['/home']">
+      <ion-icon slot="start" name="arrow-back-outline"></ion-icon>
+      {{ i18n.translate('PROFILE.BACK_HOME') }}
+    </ion-button>
+  </div>
 
   <div class="profile-container">
     <ion-card>
       <ion-card-header>
-        <ion-card-title>Actualizar Perfil</ion-card-title>
+        <ion-card-title>{{ i18n.translate('PROFILE.TITLE') }}</ion-card-title>
       </ion-card-header>
 
       <ion-card-content>
         <form [formGroup]="profileForm" (ngSubmit)="onSubmit()">
           <ion-grid>
             <ion-row>
-              <!-- Name -->
               <ion-col size="6">
                 <ion-item>
-                  <ion-label position="floating">Nombre</ion-label>
+                  <ion-label position="floating">{{ i18n.translate('REGISTER.NAME') }}</ion-label>
                   <ion-input type="text" formControlName="name"></ion-input>
                 </ion-item>
               </ion-col>
- 
-              <!-- Lastname -->
+
               <ion-col size="6">
                 <ion-item>
-                  <ion-label position="floating">Apellido</ion-label>
+                  <ion-label position="floating">{{ i18n.translate('REGISTER.LASTNAME') }}</ion-label>
                   <ion-input type="text" formControlName="lastname"></ion-input>
                 </ion-item>
               </ion-col>
             </ion-row>
 
             <ion-row>
-              <!-- Email -->
               <ion-col size="12">
                 <ion-item>
-                  <ion-label position="floating">Correo</ion-label>
+                  <ion-label position="floating">{{ i18n.translate('LOGIN.EMAIL') }}</ion-label>
                   <ion-input type="email" formControlName="email"></ion-input>
                 </ion-item>
-                <ion-note color="danger" *ngIf="profileForm.get('email')?.touched && profileForm.get('email')?.invalid">
-                  Ingresa un correo válido
+                <ion-note color="danger"
+                          *ngIf="profileForm.get('email')?.touched && profileForm.get('email')?.invalid">
+                  {{ i18n.translate('LOGIN.INVALID_EMAIL') }}
                 </ion-note>
               </ion-col>
             </ion-row>
 
             <ion-row>
-              <!-- Password -->
               <ion-col size="12">
                 <ion-item>
-                  <ion-label position="floating">Contraseña</ion-label>
+                  <ion-label position="floating">{{ i18n.translate('LOGIN.PASSWORD') }}</ion-label>
                   <ion-input type="password" formControlName="password"></ion-input>
                 </ion-item>
-                <ion-note color="danger" *ngIf="profileForm.get('password')?.touched && profileForm.get('password')?.invalid">
-                  La contraseña debe tener al menos 6 caracteres
+                <ion-note color="danger"
+                          *ngIf="profileForm.get('password')?.touched && profileForm.get('password')?.invalid">
+                  {{ i18n.translate('LOGIN.MIN_PASSWORD') }}
                 </ion-note>
               </ion-col>
             </ion-row>
           </ion-grid>
 
-          <!-- Button Save -->
           <ion-button expand="block" type="submit" [disabled]="profileForm.invalid" class="ion-margin-top">
-            Guardar Cambios
+            {{ i18n.translate('PROFILE.SAVE') }}
           </ion-button>
         </form>
       </ion-card-content>

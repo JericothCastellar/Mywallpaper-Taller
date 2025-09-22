@@ -1,18 +1,15 @@
 <ion-content [fullscreen]="true" class="ion-padding">
-
-  <!-- Title -->
   <div class="home-title">
-    Mywallpapers
+    {{ i18n.translate('HOME.TITLE') }}
   </div>
 
-  <!-- Grid wallpapers -->
   <ion-grid>
     <ion-row>
       <ion-col size="6" *ngFor="let wallpaper of wallpapers; let i = index">
         <ion-card class="wallpaper-card">
           <img [src]="wallpaper.url" alt="wallpaper" />
           <ion-button fill="clear" color="danger" class="delete-btn"
-            (click)="deleteWallpaper(i); $event.stopPropagation()">
+                      (click)="deleteWallpaper(i); $event.stopPropagation()">
             <ion-icon [icon]="deleteIcon"></ion-icon>
           </ion-button>
           <ion-button fill="clear" color="light" class="view-btn" (click)="viewWallpaper(wallpaper)">
@@ -23,7 +20,6 @@
     </ion-row>
   </ion-grid>
 
-  <!-- FAB Menu -->
   <ion-fab vertical="bottom" horizontal="end" slot="fixed">
     <ion-fab-button>
       <ion-icon [icon]="menuIcon"></ion-icon>
@@ -46,12 +42,12 @@
 
   <input type="file" accept="image/*" #fileInput hidden (change)="onFileSelected($event)" />
 
-  <!-- Modal para ver wallpaper -->
   <ion-modal #modal>
     <ion-content>
-      <ion-button fill="clear" color="danger" (click)="closeModal()">Cerrar</ion-button>
+      <ion-button fill="clear" color="danger" (click)="closeModal()">
+        {{ i18n.translate('HOME.CLOSE') }}
+      </ion-button>
       <img [src]="selectedWallpaperUrl" class="full-wallpaper" *ngIf="selectedWallpaperUrl"/>
     </ion-content>
   </ion-modal>
-
 </ion-content>

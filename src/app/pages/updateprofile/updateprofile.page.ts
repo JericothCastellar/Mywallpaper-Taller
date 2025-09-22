@@ -1,16 +1,15 @@
-
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
-
+import { Router, RouterModule } from '@angular/router';
 import {
   IonContent, IonItem, IonLabel, IonInput, IonButton,
   IonCard, IonCardContent, IonCardHeader, IonCardTitle,
   IonNote, IonGrid, IonRow, IonCol, IonIcon
 } from '@ionic/angular/standalone';
-
 import { AuthService } from '../../core/services/auth.service';
+import { I18nService } from '../../core/services/i18n.service';
+import { ToastService } from '../../core/services/toast.service';
 
 @Component({
   selector: 'app-updateprofile',
@@ -21,12 +20,10 @@ import { AuthService } from '../../core/services/auth.service';
     IonContent, CommonModule, FormsModule, ReactiveFormsModule,
     IonItem, IonLabel, IonInput, IonButton,
     IonCard, IonCardContent, IonCardHeader, IonCardTitle,
-    IonNote, IonGrid, IonRow, IonCol, IonIcon
+    IonNote, IonGrid, IonRow, IonCol, IonIcon, RouterModule
   ],
 })
 export class UpdateProfilePage implements OnInit {
-  constructor(private fb: FormBuilder, private authService: AuthService, private router: Router) {}
-
   profileForm = this.fb.group({
     name: ['', [Validators.minLength(2)]],
     lastname: ['', [Validators.minLength(2)]],
@@ -34,8 +31,15 @@ export class UpdateProfilePage implements OnInit {
     password: ['', [Validators.minLength(6)]],
   });
 
+  constructor(
+    private fb: FormBuilder,
+    private authService: AuthService,
+    private router: Router,
+    public i18n: I18nService,
+    private toast: ToastService
+  ) {}
+
   ngOnInit() {
-    console.log('UpdateProfilePage initialized');
     const currentUser = this.authService.getCurrentUser();
     if (currentUser) {
       this.profileForm.patchValue({
@@ -55,7 +59,6 @@ export class UpdateProfilePage implements OnInit {
         password?: string | null;
       };
 
-
       const updatedData: { name?: string; lastname?: string; email?: string; password?: string } = {};
       (Object.keys(formValues) as (keyof typeof formValues)[]).forEach(key => {
         const value = formValues[key];
@@ -65,19 +68,22 @@ export class UpdateProfilePage implements OnInit {
       });
 
       if (Object.keys(updatedData).length > 0) {
+        await this.toast.showLoader(this.i18n.translate('PROFILE.UPDATING'));
         const res = await this.authService.updateProfile(updatedData);
+        await this.toast.hideLoader();
+
         if (res.success) {
-          console.log('Profile updated successfully');
+          this.toast.show(this.i18n.translate('PROFILE.UPDATED'));
           this.router.navigate(['/home']);
         } else {
-          console.error('Error updating profile:', res.message);
+          this.toast.show(this.i18n.translate('PROFILE.ERROR_UPDATING') + ': ' + res.message, 2500, 'danger');
         }
       } else {
-        console.log('No fields to update');
+        this.toast.show(this.i18n.translate('PROFILE.NO_CHANGES'));
       }
     } else {
-      console.log('Form is invalid');
       this.profileForm.markAllAsTouched();
+      this.toast.show(this.i18n.translate('PROFILE.INVALID_FORM'), 2500, 'danger');
     }
   }
 }
