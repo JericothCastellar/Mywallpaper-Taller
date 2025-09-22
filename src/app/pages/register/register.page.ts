@@ -6,9 +6,8 @@ import {
   IonNote, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonSelect, IonSelectOption,
   ToastController
 } from '@ionic/angular/standalone';
-
-import { AuthService } from '../../core/services/auth.service';
 import { Router, RouterModule } from '@angular/router';
+import { AuthService } from '../../core/services/auth.service';
 
 @Component({
   selector: 'app-register',
@@ -17,8 +16,8 @@ import { Router, RouterModule } from '@angular/router';
   standalone: true,
   imports: [
     IonContent, IonHeader, IonTitle, IonToolbar, CommonModule, FormsModule, ReactiveFormsModule,
-    IonItem, IonLabel, IonInput, IonButton, IonNote, IonCard, IonCardContent, IonCardHeader,
-    IonCardTitle, IonSelect, IonSelectOption, RouterModule
+    IonItem, IonLabel, IonInput, IonButton, IonNote, IonCard, IonCardContent, IonCardHeader, IonCardTitle,
+    IonSelect, IonSelectOption, RouterModule
   ],
 })
 export class RegisterPage implements OnInit {
@@ -38,9 +37,7 @@ export class RegisterPage implements OnInit {
     private router: Router
   ) {}
 
-  ngOnInit() {
-    console.log('RegisterPage initialized');
-  }
+  ngOnInit() {}
 
   async onSubmit() {
     if (!this.registerForm.valid) {
@@ -50,16 +47,16 @@ export class RegisterPage implements OnInit {
 
     const { nombre, apellido, email, password, language } = this.registerForm.value;
 
+    // 🔑 Registrar en Firebase + sincronizar con Supabase
     const res = await this.authService.register(
       nombre!, apellido!, email!, password!, language!
     );
 
     if (res.success) {
       this.showToast('Registro exitoso');
-      // Redirigir auto al login después de registrarse
       this.router.navigate(['/login']);
     } else {
-      this.showToast(this.firebaseErrorToMessage(res.message || ''));
+      this.showToast(this.firebaseErrorToMessage(res.message || 'Error al registrar'));
     }
   }
 
@@ -75,7 +72,6 @@ export class RegisterPage implements OnInit {
         return 'Ocurrió un error, intenta de nuevo.';
     }
   }
-
 
   private async showToast(message: string) {
     const toast = await this.toastCtrl.create({
