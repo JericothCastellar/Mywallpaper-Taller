@@ -9,6 +9,7 @@ import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
 import { I18nService } from '../../core/services/i18n.service';
 import { ToastService } from '../../core/services/toast.service';
+import { LoadingService } from '../../core/services/loading.service'; 
 
 @Component({
   selector: 'app-login',
@@ -33,7 +34,8 @@ export class LoginPage {
     private authService: AuthService,
     private router: Router,
     public i18n: I18nService,
-    private toast: ToastService
+    private toast: ToastService,
+    private loading: LoadingService 
   ) {}
 
   async onSubmit() {
@@ -45,15 +47,19 @@ export class LoginPage {
     const { email, password } = this.loginForm.value;
     if (!email || !password) return;
 
-    await this.toast.showLoader(this.i18n.translate('LOGIN.BUTTON'));
+    await this.loading.show(this.i18n.translate('LOGIN.BUTTON'));
     const res = await this.authService.login(email, password);
-    await this.toast.hideLoader();
+    await this.loading.hide();
 
     if (res.success) {
       this.toast.show(this.i18n.translate('LOGIN.SUCCESS'));
       this.router.navigate(['/home']);
     } else {
-      this.toast.show(this.firebaseErrorToMessage(res.message || this.i18n.translate('LOGIN.ERROR')), 2500, 'danger');
+      this.toast.show(
+        this.firebaseErrorToMessage(res.message || this.i18n.translate('LOGIN.ERROR')),
+        2500,
+        'danger'
+      );
     }
   }
 

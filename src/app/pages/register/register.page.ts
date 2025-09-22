@@ -1,4 +1,3 @@
-
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
@@ -10,6 +9,7 @@ import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
 import { I18nService } from '../../core/services/i18n.service';
 import { ToastService } from '../../core/services/toast.service';
+import { LoadingService } from '../../core/services/loading.service';
 
 @Component({
   selector: 'app-register',
@@ -37,7 +37,8 @@ export class RegisterPage implements OnInit {
     private authService: AuthService,
     private router: Router,
     public i18n: I18nService,
-    private toast: ToastService
+    private toast: ToastService,
+    private loading: LoadingService
   ) {}
 
   ngOnInit() {}
@@ -49,15 +50,20 @@ export class RegisterPage implements OnInit {
     }
 
     const { nombre, apellido, email, password, language } = this.registerForm.value;
-    await this.toast.showLoader('Registrando...');
+
+    await this.loading.show(this.i18n.translate('REGISTER.BUTTON') || 'Registrando...');
     const res = await this.authService.register(nombre!, apellido!, email!, password!, language!);
-    await this.toast.hideLoader();
+    await this.loading.hide();
 
     if (res.success) {
-      this.toast.show('Registro exitoso');
+      this.toast.show(this.i18n.translate('REGISTER.SUCCESS') || 'Registro exitoso');
       this.router.navigate(['/login']);
     } else {
-      this.toast.show(this.firebaseErrorToMessage(res.message || 'Error al registrar'), 2500, 'danger');
+      this.toast.show(
+        this.firebaseErrorToMessage(res.message || this.i18n.translate('REGISTER.ERROR') || 'Error al registrar'),
+        2500,
+        'danger'
+      );
     }
   }
 
@@ -70,7 +76,7 @@ export class RegisterPage implements OnInit {
       case 'Firebase: Error (auth/weak-password).':
         return 'La contraseña es muy débil.';
       default:
-        return 'Ocurrió un error, intenta de nuevo.';
+        return this.i18n.translate('REGISTER.ERROR') || 'Ocurrió un error, intenta de nuevo.';
     }
   }
 

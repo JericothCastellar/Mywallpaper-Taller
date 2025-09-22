@@ -30,7 +30,8 @@ export class I18nService {
         BUTTON: 'Registrarse',
         SUCCESS: 'Registro exitoso',
         EMAIL_ALREADY_IN_USE: 'El correo ya está registrado.',
-        HAVE_ACCOUNT: '¿Ya tienes cuenta?'
+        HAVE_ACCOUNT: '¿Ya tienes cuenta?',
+        ERROR: 'Ocurrió un error al registrar'
       },
       HOME: {
         TITLE: 'Mis Wallpapers',
@@ -43,14 +44,20 @@ export class I18nService {
         DELETED: 'Wallpaper eliminado',
         ERROR_DELETING: 'Error al eliminar',
         ERROR_LOGOUT: 'Error al cerrar sesión',
+        LOGGED_OUT: 'Sesión cerrada correctamente',
+        UPLOADING: 'Subiendo...',
+        DELETING: 'Eliminando...',
         CLOSE: 'Cerrar'
       },
-
-
       PROFILE: {
         TITLE: 'Actualizar Perfil',
         SAVE: 'Guardar Cambios',
-        BACK_HOME: 'Home'
+        BACK_HOME: 'Home',
+        UPDATING: 'Actualizando perfil...',
+        UPDATED: 'Perfil actualizado correctamente',
+        ERROR_UPDATING: 'Error al actualizar perfil',
+        NO_CHANGES: 'No hay cambios para guardar',
+        INVALID_FORM: 'Formulario inválido'
       }
     },
     en: {
@@ -76,7 +83,8 @@ export class I18nService {
         BUTTON: 'Register',
         SUCCESS: 'Registration successful',
         EMAIL_ALREADY_IN_USE: 'Email already in use.',
-        HAVE_ACCOUNT: 'Already have an account?'
+        HAVE_ACCOUNT: 'Already have an account?',
+        ERROR: 'An error occurred during registration'
       },
       HOME: {
         TITLE: 'My Wallpapers',
@@ -89,12 +97,20 @@ export class I18nService {
         DELETED: 'Wallpaper deleted',
         ERROR_DELETING: 'Error deleting',
         ERROR_LOGOUT: 'Error logging out',
+        LOGGED_OUT: 'Logged out successfully',
+        UPLOADING: 'Uploading...',
+        DELETING: 'Deleting...',
         CLOSE: 'Close'
       },
       PROFILE: {
         TITLE: 'Update Profile',
         SAVE: 'Save Changes',
-        BACK_HOME: 'Home'
+        BACK_HOME: 'Home',
+        UPDATING: 'Updating profile...',
+        UPDATED: 'Profile updated successfully',
+        ERROR_UPDATING: 'Error updating profile',
+        NO_CHANGES: 'No changes to save',
+        INVALID_FORM: 'Invalid form'
       }
     }
   };
@@ -105,10 +121,8 @@ export class I18nService {
       this.current = saved;
       return;
     }
-
     const navLang = navigator.language || (navigator as any).userLanguage || 'en';
     const lang = navLang.toLowerCase().startsWith('es') ? 'es' : 'en';
-
     this.current = lang;
     localStorage.setItem('lang', lang);
   }

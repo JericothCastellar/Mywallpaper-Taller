@@ -20,13 +20,15 @@
     </ion-row>
   </ion-grid>
 
+  <!-- FAB MENU -->
   <ion-fab vertical="bottom" horizontal="end" slot="fixed">
     <ion-fab-button>
       <ion-icon [icon]="menuIcon"></ion-icon>
     </ion-fab-button>
 
     <ion-fab-list side="top">
-      <ion-fab-button (click)="fileInput.click()">
+      <!-- Usamos pickWallpaper() directamente -->
+      <ion-fab-button (click)="pickWallpaper()">
         <ion-icon [icon]="addIcon"></ion-icon>
       </ion-fab-button>
 
@@ -40,8 +42,7 @@
     </ion-fab-list>
   </ion-fab>
 
-  <input type="file" accept="image/*" #fileInput hidden (change)="onFileSelected($event)" />
-
+  <!-- Modal para ver wallpaper -->
   <ion-modal #modal>
     <ion-content>
       <ion-button fill="clear" color="danger" (click)="closeModal()">
