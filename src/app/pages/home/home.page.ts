@@ -16,7 +16,6 @@ import { I18nService } from '../../core/services/i18n.service';
 import { ToastService } from '../../core/services/toast.service';
 import { LoadingService } from '../../core/services/loading.service';
 import { FilePickerService } from '../../core/services/file-picker.service';
-import { WallpaperService } from '../../core/services/wallpaper.service';
 
 @Component({
   selector: 'app-home',
@@ -48,14 +47,13 @@ export class HomePage implements OnInit {
     private supabaseService: SupabaseService,
     private router: Router,
     public i18n: I18nService,
-    private wallpaperService: WallpaperService,
     private toast: ToastService,
     private loading: LoadingService,
     private filePicker: FilePickerService
   ) { }
 
   async ngOnInit() {
-    const authUser = this.authService.getCurrentUser();
+    const authUser = this.authService.currentUser;
     if (!authUser) {
       this.router.navigate(['/login']);
       return;
@@ -97,7 +95,7 @@ export class HomePage implements OnInit {
       this.wallpapers.unshift({ name: res.path!, url: res.url });
       this.toast.show(this.i18n.translate('HOME.UPLOADED'));
     } else {
-      this.toast.show(this.i18n.translate('HOME.ERROR_UPLOADING') + ': ' + res.message, 2500, 'danger');
+      this.toast.show(this.i18n.translate('HOME.ERROR_UPLOADING'), 2500, 'danger');
     }
   }
 
@@ -111,7 +109,7 @@ export class HomePage implements OnInit {
       this.wallpapers.splice(index, 1);
       this.toast.show(this.i18n.translate('HOME.DELETED'));
     } else {
-      this.toast.show(this.i18n.translate('HOME.ERROR_DELETING') + ': ' + res.message, 2500, 'danger');
+      this.toast.show(this.i18n.translate('HOME.ERROR_DELETING'), 2500, 'danger');
     }
   }
 
@@ -129,12 +127,9 @@ export class HomePage implements OnInit {
     if (this.wallpapers.length === 0) {
       return this.toast.show(this.i18n.translate('HOME.NO_WALLPAPERS'));
     }
-
     const buttons = this.wallpapers.map(w => ({
       text: w.name,
-      handler: () => this.setAsWallpaper(w.url)
     }));
-
     const actionSheet = document.createElement('ion-action-sheet');
     actionSheet.header = this.i18n.translate('HOME.CHOOSE_WALLPAPER');
     actionSheet.buttons = [
@@ -147,22 +142,4 @@ export class HomePage implements OnInit {
     document.body.appendChild(actionSheet);
     await actionSheet.present();
   }
-
-async setAsWallpaper(url: string) {
-  if (!url)
-    return this.toast.show(this.i18n.translate('HOME.NO_IMAGE_SELECTED'));
-
-  this.selectedWallpaperUrl = url;
-
-  const res =
-    this.selectedType === 'home'
-      ? await this.wallpaperService.setHomeScreenWallpaper(url)
-      : await this.wallpaperService.setLockScreenWallpaper(url);
-
-  if (res.success) {
-    this.toast.show(this.i18n.translate('HOME.WALLPAPER_SET_OK'));
-  } else {
-    this.toast.show(this.i18n.translate('HOME.ERROR_SETTING_WALLPAPER') + ': ' + res.message, 2500, 'danger');
-  }
-}
 }

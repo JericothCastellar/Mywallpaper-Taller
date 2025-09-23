@@ -23,7 +23,6 @@ import { LoadingService } from '../../core/services/loading.service';
   ],
 })
 export class RegisterPage implements OnInit {
-
   registerForm = this.fb.group({
     nombre: ['', [Validators.required, Validators.minLength(2)]],
     apellido: ['', [Validators.required, Validators.minLength(2)]],
@@ -52,18 +51,21 @@ export class RegisterPage implements OnInit {
     const { nombre, apellido, email, password, language } = this.registerForm.value;
 
     await this.loading.show(this.i18n.translate('REGISTER.BUTTON') || 'Registrando...');
-    const res = await this.authService.register(nombre!, apellido!, email!, password!, language!);
-    await this.loading.hide();
 
-    if (res.success) {
-      this.toast.show(this.i18n.translate('REGISTER.SUCCESS') || 'Registro exitoso');
-      this.router.navigate(['/login']);
-    } else {
-      this.toast.show(
-        this.firebaseErrorToMessage(res.message || this.i18n.translate('REGISTER.ERROR') || 'Error al registrar'),
-        2500,
-        'danger'
+    try {
+      const res = await this.authService.register(
+        nombre!, apellido!, email!, password!, language!
       );
+      await this.loading.hide();
+
+      if (res.success) {
+        this.toast.show(this.i18n.translate('REGISTER.SUCCESS') || 'Registro exitoso');
+        this.router.navigate(['/login']);
+      }
+    } catch (err: any) {
+      await this.loading.hide();
+      const msg = this.firebaseErrorToMessage(err?.message || '');
+      this.toast.show(msg, 2500, 'danger');
     }
   }
 

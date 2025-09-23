@@ -40,7 +40,7 @@ export class UpdateProfilePage implements OnInit {
   ) {}
 
   ngOnInit() {
-    const currentUser = this.authService.getCurrentUser();
+    const currentUser = this.authService.currentUser;
     if (currentUser) {
       this.profileForm.patchValue({
         name: currentUser.displayName?.split(' ')[0] || '',
@@ -51,39 +51,48 @@ export class UpdateProfilePage implements OnInit {
   }
 
   async onSubmit() {
-    if (this.profileForm.valid) {
-      const formValues = this.profileForm.value as {
-        name?: string | null;
-        lastname?: string | null;
-        email?: string | null;
-        password?: string | null;
-      };
-
-      const updatedData: { name?: string; lastname?: string; email?: string; password?: string } = {};
-      (Object.keys(formValues) as (keyof typeof formValues)[]).forEach(key => {
-        const value = formValues[key];
-        if (value) {
-          updatedData[key] = value;
-        }
-      });
-
-      if (Object.keys(updatedData).length > 0) {
-        await this.toast.showLoader(this.i18n.translate('PROFILE.UPDATING'));
-        const res = await this.authService.updateProfile(updatedData);
-        await this.toast.hideLoader();
-
-        if (res.success) {
-          this.toast.show(this.i18n.translate('PROFILE.UPDATED'));
-          this.router.navigate(['/home']);
-        } else {
-          this.toast.show(this.i18n.translate('PROFILE.ERROR_UPDATING') + ': ' + res.message, 2500, 'danger');
-        }
-      } else {
-        this.toast.show(this.i18n.translate('PROFILE.NO_CHANGES'));
-      }
-    } else {
+    if (!this.profileForm.valid) {
       this.profileForm.markAllAsTouched();
       this.toast.show(this.i18n.translate('PROFILE.INVALID_FORM'), 2500, 'danger');
+      return;
+    }
+
+    const formValues = this.profileForm.value as {
+      name?: string | null;
+      lastname?: string | null;
+      email?: string | null;
+      password?: string | null;
+    };
+
+    const updatedData: { name?: string; lastname?: string; email?: string; password?: string } = {};
+    (Object.keys(formValues) as (keyof typeof formValues)[]).forEach(key => {
+      const value = formValues[key];
+      if (value) {
+        updatedData[key] = value;
+      }
+    });
+
+    if (Object.keys(updatedData).length === 0) {
+      this.toast.show(this.i18n.translate('PROFILE.NO_CHANGES'));
+      return;
+    }
+
+    try {
+      await this.toast.showLoader(this.i18n.translate('PROFILE.UPDATING'));
+      const res = await this.authService.updateProfile(updatedData);
+      await this.toast.hideLoader();
+
+      if (res.success) {
+        this.toast.show(this.i18n.translate('PROFILE.UPDATED'));
+        this.router.navigate(['/home']);
+      }
+    } catch (err: any) {
+      await this.toast.hideLoader();
+      this.toast.show(
+        this.i18n.translate('PROFILE.ERROR_UPDATING') + ': ' + (err?.message || ''),
+        2500,
+        'danger'
+      );
     }
   }
 }

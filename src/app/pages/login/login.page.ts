@@ -48,18 +48,19 @@ export class LoginPage {
     if (!email || !password) return;
 
     await this.loading.show(this.i18n.translate('LOGIN.BUTTON'));
-    const res = await this.authService.login(email, password);
-    await this.loading.hide();
 
-    if (res.success) {
-      this.toast.show(this.i18n.translate('LOGIN.SUCCESS'));
-      this.router.navigate(['/home']);
-    } else {
-      this.toast.show(
-        this.firebaseErrorToMessage(res.message || this.i18n.translate('LOGIN.ERROR')),
-        2500,
-        'danger'
-      );
+    try {
+      const res = await this.authService.login(email, password);
+      await this.loading.hide();
+
+      if (res.success) {
+        this.toast.show(this.i18n.translate('LOGIN.SUCCESS'));
+        this.router.navigate(['/home']);
+      }
+    } catch (err: any) {
+      await this.loading.hide();
+      const msg = this.firebaseErrorToMessage(err?.message || '');
+      this.toast.show(msg, 2500, 'danger');
     }
   }
 
