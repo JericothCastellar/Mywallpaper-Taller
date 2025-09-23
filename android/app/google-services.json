@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "132370081062",
+    "project_id": "mywallpaper-c380d",
+    "storage_bucket": "mywallpaper-c380d.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:132370081062:android:c6ab993c9a363228900de7",
+        "android_client_info": {
+          "package_name": "io.ionic.starter"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA9MKScVG92zVMvqwIZ5HJ71QWeSIRiZi4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

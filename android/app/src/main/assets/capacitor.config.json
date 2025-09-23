@@ -1,5 +1,12 @@
 {
-	"appId": "com.mywallpaper.app",
+	"appId": "io.ionic.starter",
 	"appName": "Mywallpaper",
-	"webDir": "www"
+	"webDir": "www",
+	"plugins": {
+		"MyWallpaperPlugin": {
+			"android": {
+				"class": "com.mycompany.plugins.example.MyWallpaperPluginPlugin"
+			}
+		}
+	}
 }

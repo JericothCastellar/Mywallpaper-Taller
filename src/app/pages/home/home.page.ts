@@ -16,6 +16,7 @@ import { I18nService } from '../../core/services/i18n.service';
 import { ToastService } from '../../core/services/toast.service';
 import { LoadingService } from '../../core/services/loading.service';
 import { FilePickerService } from '../../core/services/file-picker.service';
+import { WallpaperService } from '../../core/services/wallpaper.service';
 
 @Component({
   selector: 'app-home',
@@ -47,10 +48,11 @@ export class HomePage implements OnInit {
     private supabaseService: SupabaseService,
     private router: Router,
     public i18n: I18nService,
+    private wallpaperService: WallpaperService,
     private toast: ToastService,
     private loading: LoadingService,
     private filePicker: FilePickerService
-  ) {}
+  ) { }
 
   async ngOnInit() {
     const authUser = this.authService.getCurrentUser();
@@ -123,19 +125,16 @@ export class HomePage implements OnInit {
     }
   }
 
-  // nuevo: abrir ActionSheet para elegir wallpaper
   async openSelectWallpaper() {
     if (this.wallpapers.length === 0) {
       return this.toast.show(this.i18n.translate('HOME.NO_WALLPAPERS'));
     }
 
-    // construimos botones para ActionSheet
     const buttons = this.wallpapers.map(w => ({
       text: w.name,
       handler: () => this.setAsWallpaper(w.url)
     }));
 
-    // usamos Ionic Action Sheet
     const actionSheet = document.createElement('ion-action-sheet');
     actionSheet.header = this.i18n.translate('HOME.CHOOSE_WALLPAPER');
     actionSheet.buttons = [
@@ -149,12 +148,21 @@ export class HomePage implements OnInit {
     await actionSheet.present();
   }
 
-  async setAsWallpaper(url: string) {
-    if (!url)
-      return this.toast.show(this.i18n.translate('HOME.NO_IMAGE_SELECTED'));
+async setAsWallpaper(url: string) {
+  if (!url)
+    return this.toast.show(this.i18n.translate('HOME.NO_IMAGE_SELECTED'));
 
-    this.selectedWallpaperUrl = url;
+  this.selectedWallpaperUrl = url;
 
-    this.toast.show(this.i18n.translate('HOME.SET_WALLPAPER_PENDING'));
+  const res =
+    this.selectedType === 'home'
+      ? await this.wallpaperService.setHomeScreenWallpaper(url)
+      : await this.wallpaperService.setLockScreenWallpaper(url);
+
+  if (res.success) {
+    this.toast.show(this.i18n.translate('HOME.WALLPAPER_SET_OK'));
+  } else {
+    this.toast.show(this.i18n.translate('HOME.ERROR_SETTING_WALLPAPER') + ': ' + res.message, 2500, 'danger');
   }
+}
 }

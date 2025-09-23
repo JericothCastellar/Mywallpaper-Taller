@@ -6,9 +6,6 @@ import { v4 as uuidv4 } from 'uuid';
 export class SupabaseService {
   private bucket = 'wallpapers';
 
-  /**
-   * Sube un archivo al bucket público
-   */
   async uploadFile(
     file: File,
     userId: string,
@@ -19,7 +16,6 @@ export class SupabaseService {
       const fileName = `${uuidv4()}.${ext}`;
       const filePath = `${userId}/${type}/${fileName}`;
 
-      // Sube el archivo (upsert para sobrescribir si existe)
       const { error: uploadError } = await supabase
         .storage
         .from(this.bucket)
